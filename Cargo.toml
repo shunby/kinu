@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = [ "bootloader", "kernel", "lib" ]
+members = [ "bootloader", "kernel", "lib" , "precompile"]
 
 [profile.dev]
 panic = "abort"

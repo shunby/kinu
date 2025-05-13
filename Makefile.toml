@@ -39,3 +39,19 @@ qemu-system-x86_64 -enable-kvm \
     -S
 '''
 dependencies = ["build_flow"]
+
+
+[tasks.debug_detach]
+workspace=false
+script = '''
+cd run
+cp ../target/x86_64-unknown-uefi/debug/bootloader.efi esp/efi/boot/bootx64.efi
+qemu-system-x86_64 -enable-kvm \
+    -drive if=pflash,format=raw,readonly=on,file=OVMF_CODE.fd \
+    -drive if=pflash,format=raw,readonly=on,file=OVMF_VARS.fd \
+    -drive format=raw,file=fat:rw:esp \
+    -gdb tcp::12345 \
+    -S &
+sleep 1
+'''
+dependencies = ["build_flow"]

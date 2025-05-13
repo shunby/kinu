@@ -1,0 +1,50 @@
+{
+    "configurations": [
+        {
+            "name": "Attach",
+            "type": "lldb",
+            "request": "launch",
+            "initCommands": ["log enable lldb commands"],
+            "targetCreateCommands": [
+                "platform shell cargo make debug_detach",
+                "target create ${workspaceFolder}/run/esp/kernel.elf",
+            ],
+            "cwd": "${workspaceFolder}",
+            "processCreateCommands": ["gdb-remote localhost:12345", "breakpoint set -H --name kmain", "continue"],
+            // "sourceMap": { "${workspaceFolder}": "${workspaceFolder}" },
+            // "hardwareBreakpoints": { "require": true, "limit": 5 }
+            // "preLaunchTask": "build_and_run"
+        },
+        {
+            "name": "(gdb) Attach",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/run/esp/kernel.elf",
+            "cwd": "${workspaceFolder}",
+            "targetArchitecture": "x64",
+            "MIMode": "gdb",
+            "miDebuggerServerAddress": "localhost:12345",
+            "preLaunchTask": "build_and_run",
+            "setupCommands": [
+                
+            ],
+            "customLaunchSetupCommands": [
+                { "text": "target remote localhost:12345", "description": "", "ignoreFailures": false },
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true,
+                },
+                {
+                    "text": "file ${workspaceFolder}/run/esp/kernel.elf"
+                },
+                {
+                    "description": "",
+                    "text": "hbreak kmain2",
+                    "ignoreFailures": false,
+                }
+            ],
+        },
+    ],
+    
+}

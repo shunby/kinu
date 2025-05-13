@@ -4,6 +4,12 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+anyhow = { version = "1.0.98", default-features=false }
 lib = { path="../lib" }
 lock_api = "0.4.12"
 uefi = "0.34.1"
+wasmtime = { version = "32.0.0", features = ['runtime'], default-features = false }
+x86_64 = "0.15.2"
+
+[build-dependencies]
+cc = "1.2.22"
