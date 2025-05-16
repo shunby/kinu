@@ -6,8 +6,16 @@ workspace=true
 command = "cargo"
 args = [ "build" ]
 
+[tasks.build_release]
+workspace=true
+command = "cargo"
+args = [ "build", "--release" ]
+
 [tasks.build_flow]
 run_task = { name = "build", fork = true }
+
+[tasks.build_release_flow]
+run_task = { name = "build_release", fork = true }
 
 [tasks.check]
 command = "cargo"
