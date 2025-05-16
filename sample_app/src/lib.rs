@@ -15,7 +15,6 @@ impl Guest for Component {
         print("generated a number\r\n");
         loop {
             let user_input = input();
-            print("got an input");
             if user_input == ans {
                 print("Correct!\r\n");
                 break;
@@ -25,7 +24,7 @@ impl Guest for Component {
                 print("Too big\r\n")
             }
         }
-        print("buy!\r\n");
+        print("bye!\r\n");
     }
 }
 
