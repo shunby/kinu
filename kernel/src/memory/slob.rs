@@ -1,9 +1,9 @@
 use core::{
     alloc::GlobalAlloc,
-    ptr::{NonNull, null_mut},
+    ptr::NonNull,
 };
 
-use crate::{mutex::Mutex, print, uart::print};
+use crate::mutex::Mutex;
 
 use super::{BitMapMemoryManager, MM_BYTES_PER_PAGE, PAGE_ALLOCATOR};
 
@@ -48,15 +48,17 @@ unsafe impl GlobalAlloc for SlobAlloc {
             panic!("alloc: too large alignment value");
         }
 
-        print!("alloc: {:x}\r\n", layout.size());
+        // print!("alloc: {:x}", layout.size());
 
         if layout.size() >= MM_BYTES_PER_PAGE {
             let pages = (layout.size() + MM_BYTES_PER_PAGE - 1) / MM_BYTES_PER_PAGE;
             unsafe {
-                return (*PAGE_ALLOCATOR.get())
+                let ptr = (*PAGE_ALLOCATOR.get())
                     .alloc(pages)
                     .expect("memory allocation failed")
                     .as_ptr();
+                // print!(" 0x{:x}\r\n", ptr as usize);
+                return ptr;
             }
         }
 
@@ -75,12 +77,14 @@ unsafe impl GlobalAlloc for SlobAlloc {
             let mut next_ptr = head.next.unwrap();
             let nnext = next_ptr.as_mut().next;
             head.next = nnext;
-            next_ptr.as_ptr() as *mut u8
+            let ptr = next_ptr.as_ptr() as *mut u8;
+            // print!(" 0x{:x}\r\n", ptr as usize);
+            ptr
         }
     }
 
     unsafe fn dealloc(&self, ptr: *mut u8, layout: core::alloc::Layout) {
-        print!("dealloc: {:x}\r\n", layout.size());
+        // print!("dealloc: {:x}\r\n", layout.size());
         if layout.align() > MM_BYTES_PER_PAGE {
             panic!("alloc: too large alignment value");
         }

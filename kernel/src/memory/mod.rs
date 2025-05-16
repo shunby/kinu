@@ -3,7 +3,6 @@ use core::cell::SyncUnsafeCell;
 use bitmap::BitMapMemoryManager;
 use lib::mmap::CMemoryMap;
 use slob::SlobAlloc;
-use uefi::boot::MemoryDescriptor;
 
 mod bitmap;
 mod slob;

@@ -20,7 +20,7 @@ pub struct Elf64_Ehdr {
     pub e_machine: Elf64_Half,
     pub e_version: Elf64_Word,
     pub e_entry: Elf64_Addr,
-    pub e_phoff: Elf64_Off, 
+    pub e_phoff: Elf64_Off,
     pub e_shoff: Elf64_Off,
     pub e_flags: Elf64_Word,
     pub e_ehsize: Elf64_Half,
@@ -89,32 +89,38 @@ pub struct Elf64_Dyn {
 
 pub struct ElfFile<'a> {
     pub elf_header: &'a Elf64_Ehdr,
-    pub prog_headers: &'a [Elf64_Phdr]
+    pub prog_headers: &'a [Elf64_Phdr],
 }
 
-impl <'a> ElfFile<'a> {
-    pub unsafe fn from_buffer(buffer: &[u8]) -> Self{
+impl<'a> ElfFile<'a> {
+    pub unsafe fn from_buffer(buffer: &[u8]) -> Self {
         unsafe {
             let elf_header: &Elf64_Ehdr = &*(buffer.as_ptr() as *const Elf64_Ehdr);
-            
+
             let prog_headers: &[Elf64_Phdr] = from_raw_parts(
                 buffer.as_ptr().offset(elf_header.e_phoff as isize) as *const Elf64_Phdr,
                 elf_header.e_phnum as usize,
             );
-            
-            Self { elf_header, prog_headers }
+
+            Self {
+                elf_header,
+                prog_headers,
+            }
         }
     }
 
-    pub fn load_address_range(&self) -> (u64, u64){
+    pub fn load_address_range(&self) -> (u64, u64) {
         let mut first = u64::MAX;
         let mut last = 0;
-        for phdr in self.prog_headers.iter().filter(|h| h.p_type == Elf64_PhdrType::PT_LOAD) {
+        for phdr in self
+            .prog_headers
+            .iter()
+            .filter(|h| h.p_type == Elf64_PhdrType::PT_LOAD)
+        {
             let mem_range = phdr.inmem_range();
             first = u64::min(first, mem_range.0);
             last = u64::max(last, mem_range.1);
         }
         (first, last)
     }
-
 }

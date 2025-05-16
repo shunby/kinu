@@ -6,6 +6,11 @@
         "make",
         "check"
     ],
+    "rust-analyzer.check.workspace": false,
+    "rust-analyzer.check.extraArgs": [],
+    "rust-analyzer.check.features": null,
+    "rust-analyzer.check.targets": null,
     "lldb.verboseLogging": true,
     "debug.allowBreakpointsEverywhere": true,
+    "rust-analyzer.trace.server": "verbose",
 }

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = [ "bootloader", "kernel", "lib" , "precompile"]
+members = [ "bootloader", "kernel", "lib" , "precompile", "sample_app", "wasi-random"]
 
 [profile.dev]
 panic = "abort"

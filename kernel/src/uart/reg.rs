@@ -2,8 +2,6 @@ use core::{cell::Cell, marker::PhantomData};
 
 use x86_64::structures::port::{PortRead, PortWrite};
 
-use crate::mutex::Mutex;
-
 enum AccessType {
     Read,
     Write,
@@ -38,7 +36,7 @@ impl RegSpec {
 }
 
 impl Reg {
-    pub fn spec(self) -> RegSpec {
+    fn spec(self) -> RegSpec {
         match self {
             Reg::Rx => RegSpec::new(0, false, AccessType::Read),
             Reg::Tx => RegSpec::new(0, false, AccessType::Write),
@@ -62,7 +60,7 @@ pub struct Registers {
 }
 
 impl Registers {
-    pub(crate) const fn new(port: u16) -> Self {
+    pub(super) const fn new(port: u16) -> Self {
         Self {
             port,
             _marker_unsync: PhantomData,

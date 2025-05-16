@@ -1,0 +1,8 @@
+package mykernel:sample;
+
+world sample {
+    import wasi:random/random@0.2.5;
+    import print: func(msg: string);
+    import input: func() -> u64;
+    export run: func();
+}

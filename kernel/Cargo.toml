@@ -8,8 +8,10 @@ anyhow = { version = "1.0.98", default-features=false }
 lib = { path="../lib" }
 lock_api = "0.4.12"
 uefi = "0.34.1"
-wasmtime = { version = "32.0.0", features = ['runtime'], default-features = false }
+virtio-drivers = "0.11.0"
+wasmtime = { version = "32.0.0", features = ['runtime', 'component-model'], default-features = false }
 x86_64 = "0.15.2"
+wasi-random = { path="../wasi-random" }
 
 [build-dependencies]
 cc = "1.2.22"

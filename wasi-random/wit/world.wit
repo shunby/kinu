@@ -1,0 +1,5 @@
+package mykernel:bindings;
+
+world bindings {
+    include wasi:random/imports@0.2.5;
+}

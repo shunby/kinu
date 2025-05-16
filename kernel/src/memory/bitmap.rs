@@ -23,6 +23,9 @@ impl BitMapMemoryManager {
             ) {
                 let start_page = desc.phys_start / 0x1000;
                 let end_page = start_page + desc.page_count;
+                if end_page > (MM_MAX_PHYS_ADDR / 0x1000) as u64 {
+                    continue;
+                }
 
                 for p in start_page..end_page {
                     let line = p / 8;

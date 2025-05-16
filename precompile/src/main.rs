@@ -1,21 +1,20 @@
-use std::{fs, io::Read, path::PathBuf};
+use std::{fs, path::PathBuf};
 
-use wasmtime::{Config, Engine};
 use clap::Parser;
+use wasmtime::{Config, Engine};
 
 #[derive(Parser)]
 #[command(version, about, long_about=None)]
 struct Cli {
     file: PathBuf,
     #[arg(short, long)]
-    output: Option<PathBuf>
+    output: Option<PathBuf>,
 }
 
 fn main() {
     let cli = Cli::parse();
     let file = fs::read(&cli.file).unwrap();
 
-    
     let mut config = Config::default();
     config.target("x86_64-unknown-none").unwrap();
     // config.collector(wasmtime::Collector::DeferredReferenceCounting);
@@ -29,13 +28,16 @@ fn main() {
     config.guard_before_linear_memory(false);
     config.table_lazy_init(false);
     config.wasm_backtrace(false);
-    config.wasm_bulk_memory(false);
+    config.wasm_bulk_memory(true);
     config.cranelift_nan_canonicalization(false);
     // config.wasm_gc(false);
 
-
     let engine = Engine::new(&config).unwrap();
-    
-    let module = engine.precompile_module(&file).unwrap();
-    fs::write(cli.output.unwrap_or(cli.file.with_extension("cwasm")), module).unwrap();
+
+    let module = engine.precompile_component(&file).unwrap();
+    fs::write(
+        cli.output.unwrap_or(cli.file.with_extension("cwasm")),
+        module,
+    )
+    .unwrap();
 }

@@ -12,6 +12,9 @@ run_task = { name = "build", fork = true }
 [tasks.check]
 command = "cargo"
 args = ["check", "--message-format=json-diagnostic-rendered-ansi"]
+[tasks.check2]
+command = "cargo"
+args = ["check"]
 
 [tasks.run]
 workspace=false
@@ -21,7 +24,9 @@ cp ../target/x86_64-unknown-uefi/debug/bootloader.efi esp/efi/boot/bootx64.efi
 qemu-system-x86_64 -enable-kvm \
     -drive if=pflash,format=raw,readonly=on,file=OVMF_CODE.fd \
     -drive if=pflash,format=raw,readonly=on,file=OVMF_VARS.fd \
-    -drive format=raw,file=fat:rw:esp
+    -drive format=raw,file=fat:rw:esp \
+    -m 4G \
+    -device virtio-rng-pci
 '''
 dependencies = ["build_flow"]
 
@@ -35,6 +40,8 @@ qemu-system-x86_64 -enable-kvm \
     -drive if=pflash,format=raw,readonly=on,file=OVMF_CODE.fd \
     -drive if=pflash,format=raw,readonly=on,file=OVMF_VARS.fd \
     -drive format=raw,file=fat:rw:esp \
+    -m 4G \
+    -device virtio-rng-pci \
     -gdb tcp::12345 \
     -S
 '''
@@ -50,8 +57,21 @@ qemu-system-x86_64 -enable-kvm \
     -drive if=pflash,format=raw,readonly=on,file=OVMF_CODE.fd \
     -drive if=pflash,format=raw,readonly=on,file=OVMF_VARS.fd \
     -drive format=raw,file=fat:rw:esp \
+    -m 4G \
+    -device virtio-rng-pci \
     -gdb tcp::12345 \
     -S &
 sleep 1
+'''
+dependencies = ["build_flow"]
+
+[tasks.make_component]
+workspace=false
+script = '''
+wasm-tools component new target/wasm32-unknown-unknown/debug/sample_app.wasm -o kernel/src/sample_app.wasm
+cd precompile
+cargo run -- ../kernel/src/sample_app.wasm
+cd ..
+rm kernel/src/sample_app.wasm
 '''
 dependencies = ["build_flow"]
